@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.823411404/CC/delimiter=\:
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.823411404/CC/operation=append
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.823411404/CC/value=/opt/rpi-toolchain/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.823411404/append=true
+environment/project/cdt.managedbuild.toolchain.gnu.cross.base.823411404/appendContributed=true

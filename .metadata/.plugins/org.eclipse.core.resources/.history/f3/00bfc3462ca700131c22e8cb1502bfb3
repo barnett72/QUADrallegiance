@@ -1,0 +1,8 @@
+#include "receiver.h"
+
+int main()
+{
+	Receiver* receiver = new Receiver();
+
+	return 0;
+}

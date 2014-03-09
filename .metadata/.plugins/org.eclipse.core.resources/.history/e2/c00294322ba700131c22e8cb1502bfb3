@@ -1,0 +1,15 @@
+/*
+ * receiver.cpp
+ *
+ *  Created on: Mar 8, 2014
+ *      Author: matt
+ */
+
+#include "receiver.h"
+
+Receiver::Receiver()
+{
+
+}
+
+

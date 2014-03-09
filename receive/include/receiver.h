@@ -1,0 +1,20 @@
+/*
+ * receiver.h
+ *
+ *  Created on: Mar 8, 2014
+ *      Author: matt
+ */
+
+#ifndef RECEIVER_H_
+#define RECEIVER_H_
+
+#include <stdio.h>
+#include <iostream>
+
+class Receiver
+{
+public:
+	Receiver();
+};
+
+#endif /* RECEIVER_H_ */

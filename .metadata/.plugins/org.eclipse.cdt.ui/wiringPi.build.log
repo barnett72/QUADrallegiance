@@ -1,0 +1,6 @@
+21:34:46 **** Clean-only build of configuration Default for project wiringPi ****
+make clean 
+[Clean]
+
+21:34:46 Build Finished (took 61ms)
+

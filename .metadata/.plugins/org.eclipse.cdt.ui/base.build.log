@@ -1,0 +1,7 @@
+21:34:36 **** Clean-only build of configuration Debug for project base ****
+make clean 
+rm -rf  ./src/controller.o ./src/main.o ./src/stick.o ./src/transmitter.o  ./src/controller.d ./src/main.d ./src/stick.d ./src/transmitter.d  base
+ 
+
+21:34:36 Build Finished (took 61ms)
+

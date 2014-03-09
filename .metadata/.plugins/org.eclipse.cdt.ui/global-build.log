@@ -1,0 +1,3 @@
+21:34:46 **** Clean-only build of configuration Default for project wiringPi ****
+make clean 
+[Clean]
