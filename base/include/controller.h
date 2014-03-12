@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "stick.h"
+#include "transmitValues.h"
 
 #define _RSx 3
 #define _RSy 4

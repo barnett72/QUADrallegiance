@@ -122,20 +122,3 @@ void Controller::printDebug()
 {
   std::cout << "lt:" << lt << "\tlb:" << lb << "\trt:" << rt << "\trb" << rb << "\tstart:" << start << "\t(" << lStick->getX() << ", " << lStick->getY() << ")" << std::endl;
 }
-
-std::string Controller::getThrottleNumber()
-{
-  return convertInt(rt);
-}
-
-std::string Controller::getSampleString()
-{
-  return "(" + convertInt(lStick->getX()) + "," + convertInt(lStick->getY()) + ") " + convertInt(rt);
-}
-
-std::string Controller::convertInt(int number)
-{
-  std::stringstream ss;
-  ss << number;
-  return ss.str();
-}

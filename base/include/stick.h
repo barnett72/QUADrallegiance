@@ -1,7 +1,11 @@
 #ifndef STICK_H
 #define STICK_H
 
-#define STICK_THRESHOLD 7168
+#include "transmitValues.h"
+
+#define STICK_THRESHOLD 8192
+#define DIVISOR 1536
+#define MAX_VALUE 16
 
 class Stick
 {
@@ -13,8 +17,8 @@ class Stick
     int getX();
     int getY();
     bool isPressed();
-  private:
     int normalizeValues(int value);
+  private:
     int x;
     int y;
     bool pressed;

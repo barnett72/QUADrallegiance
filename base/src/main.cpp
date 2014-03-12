@@ -1,5 +1,5 @@
 #include "transmitter.h"
-
+/*
 int main()
 {
 	Transmitter* transmitter = new Transmitter();
@@ -65,4 +65,13 @@ int main()
     }
   }
   return 0;
+}
+*/
+
+int main()
+{
+	Stick* stick = new Stick();
+	std::cout << "-32768 : " << stick -> normalizeValues(-32768) << std::endl;
+
+	return 0;
 }
