@@ -1,20 +1,20 @@
 #include "stick.h"
 
-Stick::Stick(int x, int y, bool pressed)
+Stick::Stick()
 {
-  this -> x = x;
-  this -> y = y;
-  this -> pressed = pressed;
+	x = 0;
+	y = 0;
+	pressed = false;
 }
 
 void Stick::setX(int x)
 {
-  this -> x = x;
+  this -> x = normalizeValues(x);
 }
 
 void Stick::setY(int y)
 {
-  this -> y = y;
+  this -> y = (-1)*normalizeValues(y);
 }
 
 void Stick::setPressed(bool pressed)
@@ -22,30 +22,43 @@ void Stick::setPressed(bool pressed)
   this -> pressed = pressed;
 }
 
-int Stick::getX()
+signed char Stick::getX()
 {
-  return (-1)*normalizeValues(x);
+	return x;
 }
 
-int Stick::getY()
+signed char Stick::getY()
 {
-  return normalizeValues(y);
+	return y;
 }
 
-bool Stick::isPressed() { return pressed; }
+char Stick::getTransmitX(char zeroOffset)
+{
+	return zeroOffset +  x;
+}
 
-int Stick::normalizeValues(int value)
+char Stick::getTransmitY(char zeroOffset)
+{
+	return zeroOffset + y;
+}
+
+bool Stick::isPressed()
+{
+	return pressed;
+}
+
+signed char Stick::normalizeValues(int value)
 {
 	if(value > STICK_THRESHOLD)
 	{
-		int normalized = (value - STICK_THRESHOLD + DIVISOR)/DIVISOR;
+		int normalized = (value - STICK_THRESHOLD + STICK_DIVISOR)/STICK_DIVISOR;
 		if(normalized > MAX_VALUE)
 			normalized = MAX_VALUE;
 		return normalized;
 	}
 	else if((-1)*(value) > STICK_THRESHOLD)
 	{
-		int normalized = (value + STICK_THRESHOLD - DIVISOR + 1)/DIVISOR;
+		int normalized = (value + STICK_THRESHOLD - STICK_DIVISOR + 1)/STICK_DIVISOR;
 		if((-1*normalized) > MAX_VALUE)
 			normalized = -MAX_VALUE;
 		return normalized;

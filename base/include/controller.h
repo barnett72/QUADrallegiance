@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include "stick.h"
+#include "trigger.h"
 #include "transmitValues.h"
 
 #define _RSx 3
@@ -23,8 +24,8 @@
 #define _LSx 0
 #define _LSy 1
 #define _LSpressed 317
-#define _rt 9
-#define _lt 10
+#define _rt 10
+#define _lt 9
 #define _rb 311
 #define _lb 310
 #define _a 304
@@ -47,13 +48,19 @@ class Controller
     void printDebug();
     std::string getThrottleNumber();
     std::string getSampleString();
-    signed char getLeftStickXByte();
-    signed char getLeftStickYByte();
+    char getLeftStickXByte();
+    char getLeftStickYByte();
+    char getRightStickXByte();
+    char getRightStickYByte();
+    char getLeftTriggerValue();
+    char getRightTriggerValue();
     bool getA();
     bool getB();
   private:
     Stick* rStick;
     Stick* lStick;
+    Trigger* rTrigger;
+    Trigger* lTrigger;
     int rt;
     int lt;
     bool rb;

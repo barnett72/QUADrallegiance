@@ -7,19 +7,22 @@ CPP_SRCS += \
 ../src/controller.cpp \
 ../src/main.cpp \
 ../src/stick.cpp \
-../src/transmitter.cpp 
+../src/transmitter.cpp \
+../src/trigger.cpp 
 
 OBJS += \
 ./src/controller.o \
 ./src/main.o \
 ./src/stick.o \
-./src/transmitter.o 
+./src/transmitter.o \
+./src/trigger.o 
 
 CPP_DEPS += \
 ./src/controller.d \
 ./src/main.d \
 ./src/stick.d \
-./src/transmitter.d 
+./src/transmitter.d \
+./src/trigger.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

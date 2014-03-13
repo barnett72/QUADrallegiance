@@ -4,24 +4,26 @@
 #include "transmitValues.h"
 
 #define STICK_THRESHOLD 8192
-#define DIVISOR 1536
+#define STICK_DIVISOR 1536
 #define MAX_VALUE 16
 
 class Stick
 {
   public:
-    Stick(int x=-1, int y=-1, bool pressed=false);
+    Stick();
     void setX(int x);
     void setY(int y);
     void setPressed(bool pressed);
-    int getX();
-    int getY();
+    signed char getX();
+    signed char getY();
     bool isPressed();
-    int normalizeValues(int value);
+    char getTransmitX(char zeroOffset);
+    char getTransmitY(char zeroOffset);
   private:
-    int x;
-    int y;
+    signed char x;
+    signed char y;
     bool pressed;
+    signed char normalizeValues(int value);
 };
 
 #endif

@@ -6,6 +6,8 @@ Controller::Controller()
 {
   rStick = new Stick();
   lStick = new Stick();
+  rTrigger = new Trigger();
+  lTrigger = new Trigger();
 
   fd = 0;
   
@@ -35,77 +37,118 @@ Controller::Controller()
 
 bool Controller::getActions()
 {
-  bool updatedAction = false;
+	bool updatedAction = false;
+	char temp = 0;
 
-  read(fd, &ie, sizeof(struct input_event));
+	read(fd, &ie, sizeof(struct input_event));
 
-  if(!((ie.code==0)&&(ie.type!=3)))
-   {
-    switch(ie.code)
-    {
-      case _LSx:
-        if((abs(ie.value)<STICK_THRESHOLD)&&(_LSx0==true)) { break; }
-        lStick -> setX(ie.value);
-        if(lStick -> getX()==0) { _LSx0 = true; }
-        else { _LSx0 = false; }
-        updatedAction = true;
-        break;
-      case _LSy:
-        if((abs(ie.value)<STICK_THRESHOLD)&&(_LSy0==true)) { break; }
-        lStick -> setY(ie.value);
-        if(lStick -> getY()==0) { _LSy0 = true; }
-        else { _LSy0 = false; }
-        updatedAction = true;
-        break;
-      case _rt:
-        rt = ie.value;
-        updatedAction = true;
-        break;
-      case _lt:
-        lt = ie.value;
-        updatedAction = true;
-        break;
-      case _lb:
-        lb = ie.value;
-        updatedAction = true;
-        break;
-      case _rb:
-        rb = ie.value;
-        updatedAction = true;
-        break;
-      case _a:
-        a = ie.value;
-        updatedAction = true;
-        break;
-      case _b:
-        b = ie.value;
-        updatedAction = true;
-        break;
-      case _start:
-        start = ie.value;
-        updatedAction = true;
-        break;
-      case _back:
-        back = ie.value;
-        updatedAction = true;
-        //exit(EXIT_FAILURE);
-        break;
-      default:
-        //std::cout << "code: " << ie.code << std::endl;
-        break;
-    }
-  }
-  return updatedAction;
+	if(!((ie.code==0)&&(ie.type!=3)))
+	{
+		switch(ie.code)
+		{
+			case _LSx:
+				temp = lStick->getX();
+				lStick->setX(ie.value);
+				if(temp == lStick->getX())
+					break;
+				updatedAction = true;
+				break;
+			case _LSy:
+				temp = lStick->getY();
+				lStick->setY(ie.value);
+				if(temp == lStick->getY())
+					break;
+				updatedAction = true;
+				break;
+			case _RSx:
+				temp = rStick->getX();
+				rStick->setX(ie.value);
+				if(temp == rStick->getX())
+					break;
+				updatedAction = true;
+				break;
+			case _RSy:
+				temp = rStick->getY();
+				rStick->setY(ie.value);
+				if(temp == rStick->getY())
+					break;
+				updatedAction = true;
+				break;
+			case _rt:
+				temp = rTrigger->getValue();
+				rTrigger->setValue(ie.value);
+				if(temp == rTrigger->getValue())
+					break;
+				updatedAction = true;
+				break;
+			case _lt:
+				temp = lTrigger->getValue();
+				lTrigger->setValue(ie.value);
+				if(temp == lTrigger->getValue())
+					break;
+				updatedAction = true;
+				break;
+			case _lb:
+				lb = ie.value;
+				updatedAction = true;
+				break;
+			case _rb:
+				rb = ie.value;
+				updatedAction = true;
+				break;
+			case _a:
+				a = ie.value;
+				updatedAction = true;
+				break;
+			case _b:
+				b = ie.value;
+				updatedAction = true;
+				break;
+			case _start:
+				start = ie.value;
+				updatedAction = true;
+				break;
+			case _back:
+				back = ie.value;
+				updatedAction = true;
+				//exit(EXIT_FAILURE);
+				break;
+			default:
+				//std::cout << "code: " << ie.code << std::endl;
+				break;
+		}
+	}
+	return updatedAction;
 }
 
-signed char Controller::getLeftStickXByte()
+char Controller::getLeftStickXByte()
 {
-  return (signed char)((lStick->getX()-1)/2);
+	return (char)(lStick->getTransmitX(_LEFT_ST_X_ZERO_));
 }
 
-signed char Controller::getLeftStickYByte()
+char Controller::getLeftStickYByte()
 {
-  return (signed char)((lStick->getY()-1)/2);
+	return (char)(lStick->getTransmitY(_LEFT_ST_Y_ZERO_));
+}
+
+char Controller::getRightStickXByte()
+{
+	return (char)(rStick->getTransmitX(_RIGHT_ST_X_ZERO_));
+}
+
+char Controller::getRightStickYByte()
+{
+	return (char)(rStick->getTransmitY(_RIGHT_ST_Y_ZERO_));
+}
+
+char Controller::getLeftTriggerValue()
+{
+	return lTrigger->getTransmitValue(_RT_MIN_);
+}
+
+char Controller::getRightTriggerValue()
+{
+	return rTrigger->getTransmitValue(_LT_MIN_);
 }
 
 bool Controller::getA()
