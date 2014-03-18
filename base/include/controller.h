@@ -44,43 +44,40 @@ class Controller
 {
   public:
     Controller();
-    bool getActions();
-    void printDebug();
-    std::string getThrottleNumber();
-    std::string getSampleString();
+    CommandType getActions();
     char getLeftStickXByte();
     char getLeftStickYByte();
     char getRightStickXByte();
     char getRightStickYByte();
     char getLeftTriggerValue();
     char getRightTriggerValue();
-    bool getA();
-    bool getB();
+    char getVerticalByte();
+    char getHorizontalByte();
+    char getAbyte();
+    char getBbyte();
+    char getXbyte();
+    char getYbyte();
+    char getLeftBumperByte();
+    char getRightBumperByte();
+    char getStartByte();
+    char getStopByte();
   private:
     Stick* rStick;
     Stick* lStick;
     Trigger* rTrigger;
     Trigger* lTrigger;
-    int rt;
-    int lt;
-    bool rb;
-    bool lb;
-    bool a;
-    bool b;
-    bool x;
-    bool y;
     bool left;
     bool right;
+    bool horizontal_release;
     bool up;
     bool down;
+    bool vertical_release;
     bool back;
     bool start;
-    bool guide;
     int fd;
     struct input_event ie;
-    bool _LSx0;
-    bool _LSy0;
-    std::string convertInt(int number);
+    bool isRunning;
+    CommandType determineStartStop(bool pressed);
 };
 
 #endif

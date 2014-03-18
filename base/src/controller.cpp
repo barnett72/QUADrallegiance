@@ -33,11 +33,21 @@ Controller::Controller()
       break;
     }
   }
+
+  back = false;
+  down = false;
+  horizontal_release = false;
+  isRunning = false;
+  left = false;
+  right = false;
+  start = false;
+  up = false;
+  vertical_release = false;
 }
 
-bool Controller::getActions()
+CommandType Controller::getActions()
 {
-	bool updatedAction = false;
+	CommandType commandType = NO_COMMAND;
 	char temp = 0;
 
 	read(fd, &ie, sizeof(struct input_event));
@@ -51,74 +61,122 @@ bool Controller::getActions()
 				lStick->setX(ie.value);
 				if(temp == lStick->getX())
 					break;
-				updatedAction = true;
+				commandType = LSx;
 				break;
 			case _LSy:
 				temp = lStick->getY();
 				lStick->setY(ie.value);
 				if(temp == lStick->getY())
 					break;
-				updatedAction = true;
+				commandType = LSy;
 				break;
 			case _RSx:
 				temp = rStick->getX();
 				rStick->setX(ie.value);
 				if(temp == rStick->getX())
 					break;
-				updatedAction = true;
+				commandType = RSx;
 				break;
 			case _RSy:
 				temp = rStick->getY();
 				rStick->setY(ie.value);
 				if(temp == rStick->getY())
 					break;
-				updatedAction = true;
+				commandType = RSy;
 				break;
 			case _rt:
 				temp = rTrigger->getValue();
 				rTrigger->setValue(ie.value);
 				if(temp == rTrigger->getValue())
 					break;
-				updatedAction = true;
+				commandType = RT;
 				break;
 			case _lt:
 				temp = lTrigger->getValue();
 				lTrigger->setValue(ie.value);
 				if(temp == lTrigger->getValue())
 					break;
-				updatedAction = true;
+				commandType = LT;
 				break;
-			case _lb:
-				lb = ie.value;
-				updatedAction = true;
+			case _horizontal:
+				if(ie.value == -1)
+					left = true;
+				else if(ie.value == 1)
+					right = true;
+				else
+					horizontal_release = true;
+				commandType = Horizontal;
 				break;
-			case _rb:
-				rb = ie.value;
-				updatedAction = true;
+			case _vertical:
+				if(ie.value == -1)
+					up = true;
+				else if(ie.value == 1)
+					down = true;
+				else
+					vertical_release = true;
+				commandType = Vertical;
 				break;
 			case _a:
-				a = ie.value;
-				updatedAction = true;
+				if(ie.value)
+					commandType = A;
 				break;
 			case _b:
-				b = ie.value;
-				updatedAction = true;
+				if(ie.value)
+					commandType = B;
+				break;
+			case _x:
+				if(ie.value)
+					commandType = X;
+				break;
+			case _y:
+				if(ie.value)
+					commandType = Y;
+				break;
+			case _lb:
+				if(ie.value)
+					commandType = LB;
+				break;
+			case _rb:
+				if(ie.value)
+					commandType = RB;
 				break;
 			case _start:
 				start = ie.value;
-				updatedAction = true;
+				commandType = determineStartStop(start);
 				break;
 			case _back:
 				back = ie.value;
-				updatedAction = true;
-				//exit(EXIT_FAILURE);
+				commandType = determineStartStop(back);
 				break;
 			default:
-				//std::cout << "code: " << ie.code << std::endl;
 				break;
 		}
 	}
-	return updatedAction;
+	return commandType;
+}
+
+CommandType Controller::determineStartStop(bool pressed)
+{
+	CommandType type = NO_COMMAND;
+	if(start && back)
+	{
+		if(!isRunning)
+		{
+			type = Start;
+			isRunning = true;
+		}
+		else
+		{
+			type = Stop;
+			isRunning = false;
+		}
+	}
+	else if(pressed == false)
+	{
+		start = false;
+		back = false;
+	}
+	return type;
 }
 
 char Controller::getLeftStickXByte()
@@ -151,17 +209,62 @@ char Controller::getRightTriggerValue()
 	return rTrigger->getTransmitValue(_LT_MIN_);
 }
 
-bool Controller::getA()
+char Controller::getVerticalByte()
 {
-  return a;
+	char returnVal = 0;
+	if(vertical_release && up)
+	{
+		returnVal = _UP_RELEASED_;
+		vertical_release = false;
+		up = false;
+	}
+	else if(vertical_release && down)
+	{
+		returnVal = _DOWN_RELEASED_;
+		vertical_release = false;
+		down = false;
+	}
+	else if(up)
+		returnVal = _UP_PRESSED_;
+	else if(down)
+		returnVal = _DOWN_PRESSED_;
+	return returnVal;
 }
 
-bool Controller::getB()
+char Controller::getHorizontalByte()
 {
-  return b;
+	char returnVal = 0;
+	if(horizontal_release && left)
+	{
+		returnVal = _LEFT_RELEASED_;
+		horizontal_release = false;
+		left = false;
+	}
+	else if(horizontal_release && right)
+	{
+		returnVal = _RIGHT_RELEASED_;
+		horizontal_release = false;
+		right = false;
+	}
+	else if(left)
+		returnVal = _LEFT_PRESSED_;
+	else if(right)
+		returnVal = _RIGHT_PRESSED_;
+	return returnVal;
 }
 
-void Controller::printDebug()
-{
-  std::cout << "lt:" << lt << "\tlb:" << lb << "\trt:" << rt << "\trb" << rb << "\tstart:" << start << "\t(" << lStick->getX() << ", " << lStick->getY() << ")" << std::endl;
-}
+char Controller::getAbyte() { return _A_BUTTON_; }
+
+char Controller::getBbyte() { return _B_BUTTON_; }
+
+char Controller::getXbyte() { return _X_BUTTON_; }
+
+char Controller::getYbyte() { return _Y_BUTTON_; }
+
+char Controller::getLeftBumperByte() { return _LEFT_BUMPER_; }
+
+char Controller::getRightBumperByte() { return _RIGHT_BUMPER_; }
+
+char Controller::getStartByte() { return _START_; }
+
+char Controller::getStopByte() { return _STOP_; }
