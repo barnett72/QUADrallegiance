@@ -61,22 +61,25 @@ class Controller
     char getRightBumperByte();
     char getStartByte();
     char getStopByte();
+    bool isRunning();
   private:
     Stick* rStick;
     Stick* lStick;
     Trigger* rTrigger;
     Trigger* lTrigger;
-    bool left;
-    bool right;
-    bool horizontal_release;
-    bool up;
-    bool down;
-    bool vertical_release;
+    int8_t vertical;
+    int8_t horizontal;
     bool back;
     bool start;
+    bool a_button;
+    bool b_button;
+    bool x_button;
+    bool y_button;
+    bool left_bump;
+    bool right_bump;
     int fd;
     struct input_event ie;
-    bool isRunning;
+    bool currentlyRunning;
     CommandType determineStartStop(bool pressed);
 };
 

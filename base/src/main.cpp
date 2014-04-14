@@ -1,81 +1,68 @@
 #include "transmitter.h"
 #include "transmitValues.h"
 
+#define TRANS_EVERY_US 20000
+
 int main()
 {
 	Transmitter* transmitter = new Transmitter();
 	int handle = transmitter->GetHandle();
 	Controller* controller = transmitter->GetController();
-	bool isRunning = false;
 
-  while(1)
-  {
-	  CommandType commandType = controller->getActions();
-	  if(isRunning)
-	  {
-		  if(commandType != NO_COMMAND)
-		  {
-			  switch(commandType)
-			  {
-			  	  case LSx:
-			  		  serialPutchar(handle, controller->getLeftStickXByte());
-			  		  break;
-			  	  case LSy:
-			  		  serialPutchar(handle, controller->getLeftStickYByte());
-			  		  break;
-			  	  case RSx:
-			  		  serialPutchar(handle, controller->getRightStickXByte());
-			  		  break;
-			  	  case RSy:
-			  		  serialPutchar(handle, controller->getRightStickYByte());
-			  		  break;
-			  	  case LT:
-			  		  serialPutchar(handle, controller->getLeftTriggerValue());
-			  		  break;
-			  	  case RT:
-			  		  serialPutchar(handle, controller->getRightTriggerValue());
-			  		  break;
-			  	  case Vertical:
-			  		  serialPutchar(handle, controller->getVerticalByte());
-			  		  break;
-			  	  case Horizontal:
-			  		  serialPutchar(handle, controller->getHorizontalByte());
-			  		  break;
-			  	  case A:
-			  		  serialPutchar(handle, controller->getAbyte());
-			  		  break;
-			  	  case B:
-			  		  serialPutchar(handle, controller->getBbyte());
-			  		  break;
-			  	  case X:
-			  		  serialPutchar(handle, controller->getXbyte());
-			  		  break;
-			  	  case Y:
-			  		  serialPutchar(handle, controller->getYbyte());
-			  		  break;
-			  	  case LB:
-			  		  serialPutchar(handle, controller->getLeftBumperByte());
-			  		  break;
-			  	  case RB:
-			  		  serialPutchar(handle, controller->getRightBumperByte());
-			  		  break;
-			  	  case Stop:
-			  		  serialPutchar(handle, controller->getStopByte());
-			  		  isRunning = false;
-			  		  break;
-			  	  default:
-			  		  break;
-			  }
-		  }
-	  }
-	  else
-	  {
-		  if(commandType == Start)
-		  {
-			  serialPutchar(handle, controller->getStartByte());
-			  isRunning = true;
-		  }
-	  }
-  }
-  return 0;
+    timeval a;
+    timeval b;
+    unsigned long difference;
+//    unsigned char character = 0;
+
+    while(1)
+    {
+        gettimeofday(&a, 0);
+
+        bool waitForTransmit = true;
+        while(waitForTransmit)
+        {
+            controller->getActions();
+
+            gettimeofday(&b, 0);
+            difference = (1000000*(b.tv_sec - a.tv_sec) + b.tv_usec) - a.tv_usec;
+
+            if(difference > TRANS_EVERY_US)
+            {
+//            	serialPutchar(handle, character++);
+//            	if(character > 255)
+//            		character = 0;
+            	if(controller->isRunning())
+            	{
+            		serialPutchar(handle, controller->getStartByte());
+
+					serialPutchar(handle, controller->getLeftStickXByte());
+					serialPutchar(handle, controller->getLeftStickYByte());
+
+					serialPutchar(handle, controller->getRightStickXByte());
+					serialPutchar(handle, controller->getRightStickYByte());
+
+					serialPutchar(handle, controller->getLeftTriggerValue());
+					serialPutchar(handle, controller->getRightTriggerValue());
+
+					serialPutchar(handle, controller->getVerticalByte());
+					serialPutchar(handle, controller->getHorizontalByte());
+
+					serialPutchar(handle, controller->getAbyte());
+					serialPutchar(handle, controller->getBbyte());
+					serialPutchar(handle, controller->getXbyte());
+					serialPutchar(handle, controller->getYbyte());
+
+					serialPutchar(handle, controller->getLeftBumperByte());
+					serialPutchar(handle, controller->getRightBumperByte());
+            	}
+            	else
+            	{
+            		serialPutchar(handle, controller->getStopByte());
+            	}
+            	waitForTransmit = false;
+            }
+        }
+
+    }
+    return 0;
 }

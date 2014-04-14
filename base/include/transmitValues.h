@@ -50,23 +50,27 @@ enum CommandType {
 #define _LT_MAX_ 220
 
 // Keypad
-#define _UP_RELEASED_ 137
-#define _UP_PRESSED_ 138
-#define _DOWN_RELEASED_ 139
-#define _DOWN_PRESSED_ 140
-#define _LEFT_RELEASED_ 141
-#define _LEFT_PRESSED_ 142
-#define _RIGHT_RELEASED_ 143
-#define _RIGHT_PRESSED_ 144
+#define _VERTICAL_UP_ 137
+#define _VERTICAL_RELEASED_ 138
+#define _VERTICAL_DOWN_ 139
+#define _HORIZ_LEFT_ 140
+#define _HORIZ_RELEASED_ 141
+#define _HORIZ_RIGHT_ 142
 
 // Buttons
-#define _A_BUTTON_ 221
-#define _B_BUTTON_ 222
-#define _X_BUTTON_ 223
-#define _Y_BUTTON_ 224
+#define _A_PRESSED_ 234
+#define _A_RELEASED_ 235
+#define _B_PRESSED_ 236
+#define _B_RELEASED_ 237
+#define _X_PRESSED_ 238
+#define _X_RELEASED_ 239
+#define _Y_PRESSED_ 240
+#define _Y_RELEASED_ 241
 
 // Bumpers
-#define _LEFT_BUMPER_ 145
-#define _RIGHT_BUMPER_ 146
+#define _L_BUMP_PRESSED_ 145
+#define _L_BUMP_RELEASED_ 146
+#define _R_BUMP_PRESSED_ 147
+#define _R_BUMP_RELEASED_ 148
 
 #endif

@@ -35,14 +35,18 @@ Controller::Controller()
   }
 
   back = false;
-  down = false;
-  horizontal_release = false;
-  isRunning = false;
-  left = false;
-  right = false;
   start = false;
-  up = false;
-  vertical_release = false;
+  currentlyRunning = false;
+
+  horizontal = 0;
+  vertical = 0;
+
+  a_button = false;
+  b_button = false;
+  x_button = false;
+  y_button = false;
+  left_bump = false;
+  right_bump = false;
 }
 
 CommandType Controller::getActions()
@@ -100,44 +104,50 @@ CommandType Controller::getActions()
 				break;
 			case _horizontal:
 				if(ie.value == -1)
-					left = true;
+					horizontal = -1; // left
 				else if(ie.value == 1)
-					right = true;
+					horizontal = 1; // right
 				else
-					horizontal_release = true;
+					horizontal = 0;
 				commandType = Horizontal;
 				break;
 			case _vertical:
 				if(ie.value == -1)
-					up = true;
+					vertical = 1; // up
 				else if(ie.value == 1)
-					down = true;
+					vertical = -1; // down
 				else
-					vertical_release = true;
+					vertical = 0;
 				commandType = Vertical;
 				break;
 			case _a:
-				if(ie.value)
+				a_button = ie.value;
+				if(a_button)
 					commandType = A;
 				break;
 			case _b:
-				if(ie.value)
+				b_button = ie.value;
+				if(b_button)
 					commandType = B;
 				break;
 			case _x:
-				if(ie.value)
+				x_button = ie.value;
+				if(x_button)
 					commandType = X;
 				break;
 			case _y:
-				if(ie.value)
+				y_button = ie.value;
+				if(y_button)
 					commandType = Y;
 				break;
 			case _lb:
-				if(ie.value)
+				left_bump = ie.value;
+				if(left_bump)
 					commandType = LB;
 				break;
 			case _rb:
-				if(ie.value)
+				right_bump = ie.value;
+				if(right_bump)
 					commandType = RB;
 				break;
 			case _start:
@@ -155,20 +165,25 @@ CommandType Controller::getActions()
 	return commandType;
 }
 
+bool Controller::isRunning()
+{
+	return currentlyRunning;
+}
+
 CommandType Controller::determineStartStop(bool pressed)
 {
 	CommandType type = NO_COMMAND;
 	if(start && back)
 	{
-		if(!isRunning)
+		if(!currentlyRunning)
 		{
 			type = Start;
-			isRunning = true;
+			currentlyRunning = true;
 		}
 		else
 		{
 			type = Stop;
-			isRunning = false;
+			currentlyRunning = false;
 		}
 	}
 	else if(pressed == false)
@@ -212,58 +227,90 @@ char Controller::getRightTriggerValue()
 char Controller::getVerticalByte()
 {
 	char returnVal = 0;
-	if(vertical_release && up)
+	switch(vertical)
 	{
-		returnVal = _UP_RELEASED_;
-		vertical_release = false;
-		up = false;
+		case 0:
+			returnVal = _VERTICAL_RELEASED_;
+			break;
+		case -1:
+			returnVal = _VERTICAL_DOWN_;
+			break;
+		case 1:
+			returnVal = _VERTICAL_UP_;
+			break;
+		default:
+			break;
 	}
-	else if(vertical_release && down)
-	{
-		returnVal = _DOWN_RELEASED_;
-		vertical_release = false;
-		down = false;
-	}
-	else if(up)
-		returnVal = _UP_PRESSED_;
-	else if(down)
-		returnVal = _DOWN_PRESSED_;
 	return returnVal;
 }
 
 char Controller::getHorizontalByte()
 {
 	char returnVal = 0;
-	if(horizontal_release && left)
+	switch(horizontal)
 	{
-		returnVal = _LEFT_RELEASED_;
-		horizontal_release = false;
-		left = false;
+		case 0:
+			returnVal = _HORIZ_RELEASED_;
+			break;
+		case -1:
+			returnVal = _HORIZ_LEFT_;
+			break;
+		case 1:
+			returnVal = _HORIZ_RIGHT_;
+			break;
+		default:
+			break;
 	}
-	else if(horizontal_release && right)
-	{
-		returnVal = _RIGHT_RELEASED_;
-		horizontal_release = false;
-		right = false;
-	}
-	else if(left)
-		returnVal = _LEFT_PRESSED_;
-	else if(right)
-		returnVal = _RIGHT_PRESSED_;
 	return returnVal;
 }
 
-char Controller::getAbyte() { return _A_BUTTON_; }
+char Controller::getAbyte()
+{
+	if(a_button)
+		return _A_PRESSED_;
+	else
+		return _A_RELEASED_;
+}
 
-char Controller::getBbyte() { return _B_BUTTON_; }
+char Controller::getBbyte()
+{
+	if(b_button)
+		return _B_PRESSED_;
+	else
+		return _B_RELEASED_;
+}
 
-char Controller::getXbyte() { return _X_BUTTON_; }
+char Controller::getXbyte()
+{
+	if(x_button)
+		return _X_PRESSED_;
+	else
+		return _X_RELEASED_;
+}
 
-char Controller::getYbyte() { return _Y_BUTTON_; }
+char Controller::getYbyte()
+{
+	if(y_button)
+		return _Y_PRESSED_;
+	else
+		return _Y_RELEASED_;
+}
 
-char Controller::getLeftBumperByte() { return _LEFT_BUMPER_; }
+char Controller::getLeftBumperByte()
+{
+	if(left_bump)
+		return _L_BUMP_PRESSED_;
+	else
+		return _L_BUMP_RELEASED_;
+}
 
-char Controller::getRightBumperByte() { return _RIGHT_BUMPER_; }
+char Controller::getRightBumperByte()
+{
+	if(right_bump)
+		return _R_BUMP_PRESSED_;
+	else
+		return _R_BUMP_RELEASED_;
+}
 
 char Controller::getStartByte() { return _START_; }
 
