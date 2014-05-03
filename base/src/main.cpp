@@ -1,68 +1,65 @@
+#include <pthread.h>
 #include "transmitter.h"
 #include "transmitValues.h"
 
 #define TRANS_EVERY_US 20000
 
+Transmitter* transmitter;
+Controller* controller;
+int handle;
+
+void* periodic_transmit(void*);
+
 int main()
 {
-	Transmitter* transmitter = new Transmitter();
-	int handle = transmitter->GetHandle();
-	Controller* controller = transmitter->GetController();
+	transmitter = new Transmitter();
+	handle = transmitter->GetHandle();
+	controller = transmitter->GetController();
 
-    timeval a;
-    timeval b;
-    unsigned long difference;
-//    unsigned char character = 0;
+	pthread_t transmitThread;
+	pthread_create(&transmitThread, NULL, &periodic_transmit, NULL);
 
+	while(1)
+	{
+		controller->getActions();
+	}
+
+    return 0;
+}
+
+void* periodic_transmit(void*)
+{
     while(1)
     {
-        gettimeofday(&a, 0);
+    	usleep(TRANS_EVERY_US);
+		if(controller->isRunning())
+		{
+			serialPutchar(handle, controller->getStartByte());
 
-        bool waitForTransmit = true;
-        while(waitForTransmit)
-        {
-            controller->getActions();
+			serialPutchar(handle, controller->getLeftStickXByte());
+			serialPutchar(handle, controller->getLeftStickYByte());
 
-            gettimeofday(&b, 0);
-            difference = (1000000*(b.tv_sec - a.tv_sec) + b.tv_usec) - a.tv_usec;
+			serialPutchar(handle, controller->getRightStickXByte());
+			serialPutchar(handle, controller->getRightStickYByte());
 
-            if(difference > TRANS_EVERY_US)
-            {
-//            	serialPutchar(handle, character++);
-//            	if(character > 255)
-//            		character = 0;
-            	if(controller->isRunning())
-            	{
-            		serialPutchar(handle, controller->getStartByte());
+			serialPutchar(handle, controller->getLeftTriggerValue());
+			serialPutchar(handle, controller->getRightTriggerValue());
 
-					serialPutchar(handle, controller->getLeftStickXByte());
-					serialPutchar(handle, controller->getLeftStickYByte());
+			serialPutchar(handle, controller->getVerticalByte());
+			serialPutchar(handle, controller->getHorizontalByte());
 
-					serialPutchar(handle, controller->getRightStickXByte());
-					serialPutchar(handle, controller->getRightStickYByte());
+			serialPutchar(handle, controller->getAbyte());
+			serialPutchar(handle, controller->getBbyte());
+			serialPutchar(handle, controller->getXbyte());
+			serialPutchar(handle, controller->getYbyte());
 
-					serialPutchar(handle, controller->getLeftTriggerValue());
-					serialPutchar(handle, controller->getRightTriggerValue());
-
-					serialPutchar(handle, controller->getVerticalByte());
-					serialPutchar(handle, controller->getHorizontalByte());
-
-					serialPutchar(handle, controller->getAbyte());
-					serialPutchar(handle, controller->getBbyte());
-					serialPutchar(handle, controller->getXbyte());
-					serialPutchar(handle, controller->getYbyte());
-
-					serialPutchar(handle, controller->getLeftBumperByte());
-					serialPutchar(handle, controller->getRightBumperByte());
-            	}
-            	else
-            	{
-            		serialPutchar(handle, controller->getStopByte());
-            	}
-            	waitForTransmit = false;
-            }
-        }
-
-    }
-    return 0;
+			serialPutchar(handle, controller->getLeftBumperByte());
+			serialPutchar(handle, controller->getRightBumperByte());
+		}
+		else
+		{
+			serialPutchar(handle, controller->getStopByte());
+		}
+	}
+    return (void *) 0;
 }
