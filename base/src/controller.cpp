@@ -42,9 +42,14 @@ Controller::Controller()
   vertical = 0;
 
   a_button = false;
+  a_OnOff = false;
+
   b_button = false;
+  b_OnOff = false;
+
   x_button = false;
   y_button = false;
+
   left_bump = false;
   right_bump = false;
 }
@@ -122,11 +127,19 @@ CommandType Controller::getActions()
 				break;
 			case _a:
 				a_button = ie.value;
+				if(a_button && a_OnOff)
+					a_OnOff = false;
+				else if(a_button && !a_OnOff)
+					a_OnOff = true;
 				if(a_button)
 					commandType = A;
 				break;
 			case _b:
 				b_button = ie.value;
+				if(b_button && b_OnOff)
+					b_OnOff = false;
+				else if(a_button && !b_OnOff)
+					b_OnOff = true;
 				if(b_button)
 					commandType = B;
 				break;
@@ -266,7 +279,7 @@ char Controller::getHorizontalByte()
 
 char Controller::getAbyte()
 {
-	if(a_button)
+	if(a_OnOff)
 		return _A_PRESSED_;
 	else
 		return _A_RELEASED_;
@@ -274,7 +287,7 @@ char Controller::getAbyte()
 
 char Controller::getBbyte()
 {
-	if(b_button)
+	if(b_OnOff)
 		return _B_PRESSED_;
 	else
 		return _B_RELEASED_;

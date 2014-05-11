@@ -13,6 +13,7 @@
 #include <cmath>
 #include <ctime>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "stick.h"
 #include "trigger.h"
@@ -72,7 +73,9 @@ class Controller
     bool back;
     bool start;
     bool a_button;
+    bool a_OnOff;
     bool b_button;
+    bool b_OnOff;
     bool x_button;
     bool y_button;
     bool left_bump;

@@ -59,6 +59,10 @@ void* periodic_transmit(void*)
 		else
 		{
 			serialPutchar(handle, controller->getStopByte());
+			serialPutchar(handle, controller->getAbyte());
+			serialPutchar(handle, controller->getBbyte());
+			serialPutchar(handle, controller->getXbyte());
+			serialPutchar(handle, controller->getYbyte());
 		}
 	}
     return (void *) 0;
